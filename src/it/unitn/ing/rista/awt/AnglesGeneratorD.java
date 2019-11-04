@@ -27,10 +27,11 @@ import java.io.*;
 import javax.swing.*;
 
 /**
- * The AnglesGeneratorD is a dialog class to prepare angles for measurement (ESQUIGo).
+ * The AnglesGeneratorD is a dialog class to prepare angles for measurement
+ * (ESQUIGo).
  *
- * @version $Revision: 1.4 $, $Date: 2006/01/19 14:45:52 $
- * @author Luca Lutterotti
+ * @version $Revision: 1.5 $, $Date: 2019/11/04 14:45:52 $
+ * @author Luca Lutterotti, revised by Damiano Martorelli
  * @since JDK1.1
  */
 
@@ -42,20 +43,27 @@ public class AnglesGeneratorD extends JFrame {
   JTextField[] beginField = new JTextField[3];
   JTextField[] endField = new JTextField[3];
   JTextField[] stepField = new JTextField[3];
-
+  /**
+   * Class constructor.
+   */
   public AnglesGeneratorD() {
     this("Multiple datafile CIF Creator");
   }
-
+  /**
+   * Default constructor.
+   * 
+   * @param title
+   *          the title of the window.
+   */
   public AnglesGeneratorD(String title) {
     super();
 
     this.getContentPane().add(anglesPanel(), BorderLayout.NORTH);
     this.getContentPane().add(filePanel(), BorderLayout.CENTER);
 
-    JPanel buttonPanel = new JPanel();
-    JButton goButton = new JButton("OK", getImage("images/Check.gif"));
-    goButton.addActionListener(new ActionListener() {
+    JPanel pnlButtons = new JPanel();
+    JButton btnConfirm = new JButton("OK", getImage("images/Check.gif"));
+    btnConfirm.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           createFile(filenameField.getText());
@@ -65,60 +73,73 @@ public class AnglesGeneratorD extends JFrame {
         }
       }
     });
-    buttonPanel.add(goButton);
-    JButton closeButton = new JButton("Exit", getImage("images/Exit.gif"));
-    closeButton.addActionListener(new ActionListener() {
+    pnlButtons.add(btnConfirm);
+    //
+    JButton btnClose = new JButton("Exit", getImage("images/Exit.gif"));
+    btnClose.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         myJFrame.prepareForDisposal(AnglesGeneratorD.this);
         setVisible(false);
         dispose();
       }
     });
-    buttonPanel.add(closeButton);
+    pnlButtons.add(btnClose);
 
-    this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+    this.getContentPane().add(pnlButtons, BorderLayout.SOUTH);
 
     this.pack();
     this.setSize(250, 200);
     Utility.putOnScreenAt(this, 30);
     this.setVisible(true);
   }
-
+  /**
+   * Defines angle panel.
+   * 
+   * @return the panle reference.
+   */
   JPanel anglesPanel() {
 
-    JPanel anglesPanel = new JPanel(new GridLayout(ANGLES_NUMBER + 1, 4));
+    JPanel pnlAngles = new JPanel(new GridLayout(ANGLES_NUMBER + 1, 4));
     JLabel[] angleLabel = new JLabel[3];
     String[] angleString = {"Phi",
                             "Chi",
                             "Omega"
     };
 
-    anglesPanel.add(new JLabel("Angle"));
-    anglesPanel.add(new JLabel("From"));
-    anglesPanel.add(new JLabel("To"));
-    anglesPanel.add(new JLabel("Step"));
+    pnlAngles.add(new JLabel("Angle"));
+    pnlAngles.add(new JLabel("From"));
+    pnlAngles.add(new JLabel("To"));
+    pnlAngles.add(new JLabel("Step"));
 
     for (int i = 0; i < ANGLES_NUMBER; i++) {
       angleLabel[i] = new JLabel(angleString[i]);
       beginField[i] = new JTextField();
       endField[i] = new JTextField();
       stepField[i] = new JTextField();
-      anglesPanel.add(angleLabel[i]);
-      anglesPanel.add(beginField[i]);
-      anglesPanel.add(endField[i]);
-      anglesPanel.add(stepField[i]);
+      pnlAngles.add(angleLabel[i]);
+      pnlAngles.add(beginField[i]);
+      pnlAngles.add(endField[i]);
+      pnlAngles.add(stepField[i]);
     }
-    return anglesPanel;
+    return pnlAngles;
   }
-
+  /**
+   * Defines filename panel.
+   * 
+   * @return the panel reference.
+   */
   JPanel filePanel() {
-    JPanel filePanel = new JPanel();
-    filePanel.add(new JLabel("Filename"));
+    JPanel pnlFileName = new JPanel();
+    pnlFileName.add(new JLabel("Filename"));
     filenameField = new JTextField(12);
-    filePanel.add(filenameField);
-    return filePanel;
+    pnlFileName.add(filenameField);
+    return pnlFileName;
   }
-
+  /**
+   * Creates file data with filename.
+   * 
+   * @param the filename string to be used.
+   */
   void createFile(String filenameString) {
     int increment = 1;
 
@@ -168,11 +189,22 @@ public class AnglesGeneratorD extends JFrame {
     }
 
   }
-
+  /**
+   * Gets an image according to specified path.
+   * 
+   * @param imagePath
+   *          the path where to search for image.
+   * @return an ImageIcon object instance if the path is valid, or
+   *         <code>null</code> if no file is found.
+   */
   ImageIcon getImage(String imagePath) {
     return new ImageIcon(getClass().getResource(imagePath));
   }
-
+  /**
+   * Main procedures for testing purpose.
+   * 
+   * @param args
+   */
   public static void main(String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
