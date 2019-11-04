@@ -38,21 +38,22 @@ import java.awt.event.ActionEvent;
 
 
 /**
- * The AtomPanel - the AtomSite List editing panel
+ * <p>
+ * The AtomPanel defines the composition of a phase, with atom types, position
+ * and parameters.
  * <p/>
- * Description
  *
- * @author Luca Lutterotti
- * @version $Revision: 1.5 $, $Date: 2006/01/19 14:45:52 $
+ * @version $Revision: 1.5 $, $Date: 2019/11/04 15:45:52 $
+ * @author Luca Lutterotti, revised by Damiano Martorelli. 
  * @since JDK1.1
  */
 
 public class AtomPanel extends JPanel {
 
   protected int siteselected = -1;
-  JList sitelabellist = null;
-	JAtomTypeListPane atomLabelList;
-  JTextField atomquantity_incell = null, atomquantity = null,
+  protected JList sitelabellist = null;
+  protected JAtomTypeListPane pnlAtomTypeList;
+  protected JTextField atomquantity_incell = null, atomquantity = null,
   xcoord = null, ycoord = null, zcoord = null, Bfactor = null;
   JCheckBox quantityFromOccCB = null;
 	JCheckBox useUinsteadOfB = null;
@@ -60,16 +61,21 @@ public class AtomPanel extends JPanel {
   AtomsStructureI m_Struct;
   myJFrame parentD;
 
-  /**
-   * Creates new form atomPanel
-   */
+/**
+ *  Class constructor.
+ *
+ * @param parentD
+ * @param m_Struct
+ */
   public AtomPanel(myJFrame parentD, AtomsStructureI m_Struct) {
     this.parentD = parentD;
     this.m_Struct = m_Struct;
     initComponents();
     initListeners();
   }
-
+  /**
+   * Initializes panel
+   */
   public void initComponents() {
     JPanel tmpPanel = null, jp1 = null, jPanel16 = null, jPanel13 = null, jPanel18 = null,
         jPanel19 = null, jPanel17 = null, jPanel20 = null;
@@ -150,11 +156,11 @@ public class AtomPanel extends JPanel {
 
 	  borderPanel1.add(jPanel20 = new JPanel(new BorderLayout()));
 
-	  atomLabelList = new JAtomTypeListPane(parentD, false);
-	  atomLabelList.setBorder(new TitledBorder(
+	  pnlAtomTypeList = new JAtomTypeListPane(parentD, false);
+	  pnlAtomTypeList.setBorder(new TitledBorder(
 			  new BevelBorder(BevelBorder.LOWERED), "Atom types in the site:"));
 
-	  jPanel20.add(atomLabelList, BorderLayout.NORTH);
+	  jPanel20.add(pnlAtomTypeList, BorderLayout.NORTH);
 
 	  jPanel20.add(jPanel19 = new JPanel(new BorderLayout()), BorderLayout.CENTER);
 
@@ -181,7 +187,9 @@ public class AtomPanel extends JPanel {
     initAtomList();
 
   }
-
+  /**
+   * Initializes listener.
+   */
 	public void initListeners() {
     sitelabellist.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent event) {
@@ -191,12 +199,14 @@ public class AtomPanel extends JPanel {
     if (m_Struct.getAtomList().size() > 0)
       siteselected = 0;
   }
-
+/**
+ * Retrieves data parameters for selected atom.
+ */
   void retrieveAtom() {
     if (siteselected >= 0) {
       AtomSite anatom = getSelectedSite();
       if (anatom != null) {
-	      atomLabelList.retrieveparlist();
+	      pnlAtomTypeList.retrieveparlist();
         anatom.setQuantity(atomquantity_incell.getText());
         anatom.getOccupancy().setValue(atomquantity.getText());
         anatom.getBfactor().setValue(Bfactor.getText());
@@ -209,15 +219,22 @@ public class AtomPanel extends JPanel {
       anatom.refreshOccupancyAndQuantity();
     }
   }
-
+  /**
+   * Retrieves parameters.
+   */
   void retrieveParameters() {
     retrieveAtom();
   }
-
+  /**
+   * Sets the atom component according to AtomSite object passed.
+   * 
+   * @param anatom
+   *          a AtomSite object reference.
+   */
   public void setAtomComponent(AtomSite anatom) {
     if (anatom != null) {
 	    String labels[] = {"Partial occupancy: "};
-	    atomLabelList.setList(anatom, 0, labels.length, labels);
+	    pnlAtomTypeList.setList(anatom, 0, labels.length, labels);
 	    parentD.addComponenttolist(atomquantity, anatom.getOccupancy());
       parentD.addComponenttolist(xcoord, anatom.getLocalCoordX());
       parentD.addComponenttolist(ycoord, anatom.getLocalCoordY());
@@ -236,11 +253,19 @@ public class AtomPanel extends JPanel {
       Bfactor.setText("0");
     }
   }
-
+  /**
+   * Gets the selected atom.
+   * 
+   * @return a AtomSite object reference.
+   */
   public AtomSite getSelectedAtom() {
     return (AtomSite) m_Struct.getAtomList().selectedElement();
   }
-
+  /**
+   * Gets the atom for the selected site.
+   * 
+   * @return a AtomSite object reference.
+   */
   public AtomSite getSelectedSite() {
 //		return getSelectedAtom();
     if (siteselected >= 0 && siteselected < m_Struct.getAtomList().size())
@@ -248,7 +273,9 @@ public class AtomPanel extends JPanel {
     else
       return null;
   }
-
+  /**
+   * Initializes atoms.
+   */
   public void initAtomList() {
     int sitenumb = m_Struct.getAtomList().setList(sitelabellist);
 //		atomnumber = loadatomtable();
@@ -256,7 +283,9 @@ public class AtomPanel extends JPanel {
     if (sitenumb > 0)
       setatomsite(0);
   }
-
+  /**
+   * Sets the atom site.
+   */
   public void setatomsite() {
     AtomSite anatom = getSelectedAtom();
     if (anatom != null) {
@@ -272,7 +301,12 @@ public class AtomPanel extends JPanel {
     }
     setAtomComponent(anatom);
   }
-
+  /**
+   * Sets the specified atom site.
+   * 
+   * @param numb
+   *          the site position.
+   */
   public void setatomsite(int numb) {
     sitelabellist.setSelectedIndex(numb);
     setatomsite();
@@ -281,7 +315,9 @@ public class AtomPanel extends JPanel {
 /*    public String gettheLabel() {
       return "Site label:";
     }*/
-
+  /**
+   * Ads new atom site.
+   */
   void addNewSiteAction() {
     // add a new atom site
     retrieveAtom();
@@ -295,7 +331,9 @@ public class AtomPanel extends JPanel {
 //		totalatomnumber.setText(String.valueOf(sitenumb));
 //		setatomsite(sitenumb-1);
   }
-
+  /**
+   * Duplicates selected atom.
+   */
   void duplicateAtoms() {
     AtomSite[] selAtom = getSelectedAtoms();
     if (selAtom != null) {
@@ -309,7 +347,11 @@ public class AtomPanel extends JPanel {
       }
     }
   }
-
+  /**
+   * Gets selected atoms.
+   * 
+   * @return a AtomSite object array.
+   */
   public AtomSite[] getSelectedAtoms() {
     int[] selAtom = sitelabellist.getSelectedIndices();
     AtomSite[] atomlist = null;
@@ -321,7 +363,9 @@ public class AtomPanel extends JPanel {
     }
     return atomlist;
   }
-
+  /**
+   * Removes sites.
+   */
   public void removeSiteAction() {
     // remove selected atom
     int[] selAtom = sitelabellist.getSelectedIndices();
@@ -332,7 +376,9 @@ public class AtomPanel extends JPanel {
         m_Struct.removeAtomAt(selAtom[i]);
     }
   }
-
+  /**
+   * Updates the label with the selected site name.
+   */
   void sitelabellist_ListSelect() {
     retrieveAtom();
     if (sitelabellist != null) {
@@ -359,7 +405,9 @@ public class AtomPanel extends JPanel {
     public String getField() {
       return sitelabellist.getSelectedValue().toXRDcatString();
     } */
-
+  /**
+   * Shows xyz coordinates.
+   */
   public void show_xyz() {
     AtomSite anatom = getSelectedAtom();
     if (anatom != null) {
@@ -389,7 +437,9 @@ public class AtomPanel extends JPanel {
     } else
       System.out.println("No atom or site selected");
   }
-
+  /**
+   * Shows info panel.
+   */
 	public void showInfoPanel() {
 		AtomSite atomSite = getSelectedAtom();
 		if (atomSite == null)
@@ -416,10 +466,12 @@ public class AtomPanel extends JPanel {
 		(new PlotSimpleData(this.parentD, x, y, false)).setVisible(true);
 
 	}
-
+  /**
+   * Disposes panel.
+   */
   public void dispose() {
     sitelabellist = null;
-	  atomLabelList = null;
+	  pnlAtomTypeList = null;
     siteselected = -1;
   }
 
