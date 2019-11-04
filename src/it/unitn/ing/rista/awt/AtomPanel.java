@@ -65,6 +65,16 @@ public class AtomPanel extends JPanel {
   protected AtomsStructureI m_Struct;
   private myJFrame frmParent;
 
+  private JPanel pnlAtomSites = null;
+  private JButton btnAddSite;
+  private JPanel pnlAtomButtons;
+  private JButton btnPositions;
+  private JButton btnDuplicate;
+  private JPanel pnlAtomParamWest;
+  private JPanel pnlAtomParameters;
+  private JPanel pnlAtomTypes;
+  private JPanel pnlAtomParamEast;
+  private JPanel pnlAtomSiteTitle;
 /**
  *  Class constructor.
  *
@@ -81,111 +91,119 @@ public class AtomPanel extends JPanel {
    * Initializes panel
    */
   public void initComponents() {
-    JPanel pnlAtomSites = null, jp1 = null, jPanel16 = null, jPanel13 = null, jPanel18 = null,
-        jPanel19 = null, jPanel17 = null, jPanel20 = null;
-    JButton addSiteB = null, jb1 = null;
-
+    JPanel pnlAtomButtons = new JPanel(new GridLayout(0, 2));
+    //
+    JPanel jPanel13 = null;
     JPanel pnlMainContainer = new JPanel(new FlowLayout());
     add(pnlMainContainer);
     pnlMainContainer.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED), "Atoms"));
     pnlMainContainer.add(pnlAtomSites = new JPanel(new BorderLayout()));
-    pnlAtomSites.add(jp1 = new JPanel(new BorderLayout()), BorderLayout.SOUTH);
-    jp1.add(jPanel16 = new JPanel(new GridLayout(0, 2)), BorderLayout.CENTER);
-
-    jPanel16.add(addSiteB = new JButton("Add site"));
-    addSiteB.setToolTipText("Add a new site to the list");
-    addSiteB.addActionListener(new ActionListener() {
+    //
+    JPanel pnlAtomOptions = new JPanel(new BorderLayout());
+    pnlAtomSites.add(pnlAtomOptions, BorderLayout.SOUTH);
+    pnlAtomOptions.add(pnlAtomButtons, BorderLayout.CENTER);
+    //
+    JButton btnAddSite = new JButton("Add site");
+    pnlAtomButtons.add(btnAddSite);
+    btnAddSite.setToolTipText("Add a new site to the list");
+    btnAddSite.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         addNewSiteAction();
       }
     });
 
-    jPanel16.add(addSiteB = new JButton("Duplicate"));
-    addSiteB.setToolTipText("Duplicate the selected sites in the list");
-    addSiteB.addActionListener(new ActionListener() {
+    pnlAtomButtons.add(btnDuplicate = new JButton("Duplicate"));
+    btnDuplicate.setToolTipText("Duplicate the selected sites in the list");
+    btnDuplicate.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         duplicateAtoms();
       }
     });
 
-    final JRemoveButton button2 = new JRemoveButton();
-    button2.setToolTipText("Remove the selected sites from the list");
-    jPanel16.add(button2);
-    button2.addActionListener(new ActionListener() {
+    final JRemoveButton btnRemove = new JRemoveButton();
+    btnRemove.setToolTipText("Remove the selected sites from the list");
+    pnlAtomButtons.add(btnRemove);
+    btnRemove.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!Constants.confirmation || Utility.areYouSureToRemove("Remove the selected sites?"))
           removeSiteAction();
       }
     });
-	  jPanel16.add(jb1 = new JIconButton("NewSheet.gif", "Positions"));
-	  jb1.setToolTipText("Shows a list of the equivalent positions for this site");
-	  jb1.addActionListener(new ActionListener() {
+	  pnlAtomButtons.add(btnPositions = new JIconButton("NewSheet.gif", "Positions"));
+	  btnPositions.setToolTipText("Shows a list of the equivalent positions for this site");
+	  btnPositions.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent event) {
 			  show_xyz();
 		  }
 	  });
 
-    JPanel jp3 = new JPanel(new FlowLayout());
-    jp1.add(jp3, BorderLayout.SOUTH);
-    jp3.add(jPanel16 = new JPanel(new GridLayout(0, 1, 3, 3)));
-	  jPanel16.add(ckBxUseUinsteadOfB = new JCheckBox("Use U instead of B for thermal factors"));
-	  ckBxUseUinsteadOfB.setToolTipText("Select this to use Biso factor instead of dimensionless Uiso (also for anisotropic)");
+    JPanel pnlCheckBoxes = new JPanel(new FlowLayout());
+    pnlAtomOptions.add(pnlCheckBoxes, BorderLayout.SOUTH);
+    pnlCheckBoxes.add(pnlAtomButtons = new JPanel(new GridLayout(0, 1, 3, 3)));
+    pnlAtomButtons.add(ckBxUseUinsteadOfB = new JCheckBox("Use U instead of B for thermal factors"));
+	ckBxUseUinsteadOfB.setToolTipText("Select this to use Biso factor instead of dimensionless Uiso (also for anisotropic)");
+	if (m_Struct != null)
 	  ckBxUseUinsteadOfB.setSelected(m_Struct.isDebyeWallerModelDimensionLess());
-	  ckBxUseUinsteadOfB.addActionListener(new ActionListener() {
-		  public void actionPerformed(ActionEvent e) {
-			  m_Struct.setDebyeWallerModelDimensionLess(ckBxUseUinsteadOfB.isSelected());
-		  }
-	  });
-	  jPanel16.add(ckBxQuantityFromOcc = new JCheckBox("Compute quantity from occupancy"));
-	  ckBxQuantityFromOcc.setToolTipText("Uncheck this to compute occupancy from quantity");
+	ckBxUseUinsteadOfB.addActionListener(new ActionListener() {
+	  public void actionPerformed(ActionEvent e) {
+		  m_Struct.setDebyeWallerModelDimensionLess(ckBxUseUinsteadOfB.isSelected());
+	  }
+	});
+	pnlAtomButtons.add(ckBxQuantityFromOcc = new JCheckBox("Compute quantity from occupancy"));
+	//
+	ckBxQuantityFromOcc.setToolTipText("Uncheck this to compute occupancy from quantity");
+    if (m_Struct != null)
 	  ckBxQuantityFromOcc.setSelected(m_Struct.getQuantityFromOccupancy());
-	  ckBxQuantityFromOcc.addActionListener(new ActionListener() {
-		  public void actionPerformed(ActionEvent e) {
-			  m_Struct.setQuantityFromOccupancy(ckBxQuantityFromOcc.isSelected());
-		  }
-	  });
-	  jPanel16.add(ckBxUseThisAtomCB = new JCheckBox("Use it in the computation"));
-	  ckBxUseThisAtomCB.setToolTipText("Uncheck this to set this atom as dummy");
+	ckBxQuantityFromOcc.addActionListener(new ActionListener() {
+	   public void actionPerformed(ActionEvent e) {
+		  m_Struct.setQuantityFromOccupancy(ckBxQuantityFromOcc.isSelected());
+		}
+	});
+	pnlAtomButtons.add(ckBxUseThisAtomCB = new JCheckBox("Use it in the computation"));
+	//
+	ckBxUseThisAtomCB.setToolTipText("Uncheck this to set this atom as dummy");
+    //
+	lstSiteLabel = new JList();
+	lstSiteLabel.setVisibleRowCount(6);
+	lstSiteLabel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+	//
+	JScrollPane scrlPaneAtomSite = new JScrollPane();
+	scrlPaneAtomSite.setViewportView(lstSiteLabel);
+	pnlAtomSites.add(scrlPaneAtomSite, BorderLayout.CENTER);
+	pnlAtomSites.add(pnlAtomSiteTitle = new JPanel(new BorderLayout(0, 0)), BorderLayout.NORTH);
+	pnlAtomSiteTitle.add(new JLabel("Atom site list:"), BorderLayout.WEST);
+	pnlMainContainer.add(pnlAtomTypes = new JPanel(new BorderLayout()));
+    //
+	pnlAtomTypeList = new JAtomTypeListPane(frmParent, false);
+	pnlAtomTypeList.setBorder(new TitledBorder(
+		  new BevelBorder(BevelBorder.LOWERED), "Atom types in the site:"));
+    //
+	pnlAtomTypes.add(pnlAtomTypeList, BorderLayout.NORTH);
+	pnlAtomTypes.add(pnlAtomParameters = new JPanel(new BorderLayout()), BorderLayout.CENTER);
+    //
+    pnlAtomParameters.add(pnlAtomParamWest = new JPanel(new GridLayout(0, 1, 3, 3)), BorderLayout.WEST);
+    pnlAtomParamWest.add(new JLabel(" Total quantity:"));
+    pnlAtomParamWest.add(new JLabel("Total occupancy:"));
+    pnlAtomParamWest.add(new JLabel("              x:"));
+    pnlAtomParamWest.add(new JLabel("              y:"));
+    pnlAtomParamWest.add(new JLabel("              z:"));
+	String Bstring = "    Biso factor:";
+	if (m_Struct != null && m_Struct.isDebyeWallerModelDimensionLess())
+	{
+	  Bstring = "    Uiso factor:";
+	}
+    pnlAtomParamWest.add(new JLabel(Bstring));
 
-	  lstSiteLabel = new JList();
-	  lstSiteLabel.setVisibleRowCount(6);
-	  lstSiteLabel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-	  JScrollPane sp = new JScrollPane();
-	  sp.setViewportView(lstSiteLabel);
-	  pnlAtomSites.add(sp, BorderLayout.CENTER);
-
-	  pnlAtomSites.add(jPanel13 = new JPanel(new BorderLayout(0, 0)), BorderLayout.NORTH);
-	  jPanel13.add(new JLabel("Atom site list:"), BorderLayout.WEST);
-
-	  pnlMainContainer.add(jPanel20 = new JPanel(new BorderLayout()));
-
-	  pnlAtomTypeList = new JAtomTypeListPane(frmParent, false);
-	  pnlAtomTypeList.setBorder(new TitledBorder(
-			  new BevelBorder(BevelBorder.LOWERED), "Atom types in the site:"));
-
-	  jPanel20.add(pnlAtomTypeList, BorderLayout.NORTH);
-
-	  jPanel20.add(jPanel19 = new JPanel(new BorderLayout()), BorderLayout.CENTER);
-
-    jPanel19.add(jPanel17 = new JPanel(new GridLayout(0, 1, 3, 3)), BorderLayout.WEST);
-    jPanel17.add(new JLabel(" Total quantity:"));
-    jPanel17.add(new JLabel("Total occupancy:"));
-    jPanel17.add(new JLabel("              x:"));
-    jPanel17.add(new JLabel("              y:"));
-    jPanel17.add(new JLabel("              z:"));
-	  String Bstring =       "    Biso factor:";
-	  if (m_Struct.isDebyeWallerModelDimensionLess())
-		  Bstring =           "    Uiso factor:";
-    jPanel17.add(new JLabel(Bstring));
-
-    jPanel19.add(jPanel18 = new JPanel(new GridLayout(0, 1, 3, 3)), BorderLayout.CENTER);
-    jPanel18.add(txtAtomquantity_incell = new JTextField("1", 6));
+    pnlAtomParameters.add(pnlAtomParamEast = new JPanel(new GridLayout(0, 1, 3, 3)), BorderLayout.CENTER);
+    //
     txtAtomquantity_incell.setToolTipText("Set the number of atoms in the cell");
-    jPanel18.add(txtAtomQuantity = new JTextField("1", 6));
-    jPanel18.add(txtXCoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(txtYCoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(txtZCoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(txtBFactor = new JTextField("0", Constants.FLOAT_FIELD));
+    //
+    pnlAtomParamEast.add(txtAtomquantity_incell = new JTextField("1", 6));
+    pnlAtomParamEast.add(txtAtomQuantity = new JTextField("1", 6));
+    pnlAtomParamEast.add(txtXCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    pnlAtomParamEast.add(txtYCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    pnlAtomParamEast.add(txtZCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    pnlAtomParamEast.add(txtBFactor = new JTextField("0", Constants.FLOAT_FIELD));
 
     initAtomList();
 
