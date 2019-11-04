@@ -50,25 +50,29 @@ import java.awt.event.ActionEvent;
 
 public class AtomPanel extends JPanel {
 
-  protected int siteselected = -1;
-  protected JList sitelabellist = null;
+  protected int iSiteSelectedIndex = -1;
+  protected JList lstSiteLabel = null;
   protected JAtomTypeListPane pnlAtomTypeList;
-  protected JTextField atomquantity_incell = null, atomquantity = null,
-  xcoord = null, ycoord = null, zcoord = null, Bfactor = null;
-  JCheckBox quantityFromOccCB = null;
-	JCheckBox useUinsteadOfB = null;
-  JCheckBox useThisAtomCB = null;
-  AtomsStructureI m_Struct;
-  myJFrame parentD;
+  protected JTextField txtAtomquantity_incell = null;
+  protected JTextField txtAtomQuantity = null;
+  protected JTextField txtXCoord = null;
+  protected JTextField txtYCoord = null;
+  protected JTextField txtZCoord = null;
+  protected JTextField txtBFactor = null;
+  private JCheckBox ckBxQuantityFromOcc;
+  private JCheckBox ckBxUseUinsteadOfB;
+  private JCheckBox ckBxUseThisAtomCB;
+  protected AtomsStructureI m_Struct;
+  private myJFrame frmParent;
 
 /**
  *  Class constructor.
  *
- * @param parentD
- * @param m_Struct
+ * @param parentD the parent dialog form.
+ * @param m_Struct the atom structure.
  */
   public AtomPanel(myJFrame parentD, AtomsStructureI m_Struct) {
-    this.parentD = parentD;
+    this.frmParent = parentD;
     this.m_Struct = m_Struct;
     initComponents();
     initListeners();
@@ -77,15 +81,15 @@ public class AtomPanel extends JPanel {
    * Initializes panel
    */
   public void initComponents() {
-    JPanel tmpPanel = null, jp1 = null, jPanel16 = null, jPanel13 = null, jPanel18 = null,
+    JPanel pnlAtomSites = null, jp1 = null, jPanel16 = null, jPanel13 = null, jPanel18 = null,
         jPanel19 = null, jPanel17 = null, jPanel20 = null;
     JButton addSiteB = null, jb1 = null;
 
-    JPanel borderPanel1 = new JPanel(new FlowLayout());
-    add(borderPanel1);
-    borderPanel1.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED), "Atoms"));
-    borderPanel1.add(tmpPanel = new JPanel(new BorderLayout()));
-    tmpPanel.add(jp1 = new JPanel(new BorderLayout()), BorderLayout.SOUTH);
+    JPanel pnlMainContainer = new JPanel(new FlowLayout());
+    add(pnlMainContainer);
+    pnlMainContainer.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED), "Atoms"));
+    pnlMainContainer.add(pnlAtomSites = new JPanel(new BorderLayout()));
+    pnlAtomSites.add(jp1 = new JPanel(new BorderLayout()), BorderLayout.SOUTH);
     jp1.add(jPanel16 = new JPanel(new GridLayout(0, 2)), BorderLayout.CENTER);
 
     jPanel16.add(addSiteB = new JButton("Add site"));
@@ -124,39 +128,38 @@ public class AtomPanel extends JPanel {
     JPanel jp3 = new JPanel(new FlowLayout());
     jp1.add(jp3, BorderLayout.SOUTH);
     jp3.add(jPanel16 = new JPanel(new GridLayout(0, 1, 3, 3)));
-	  jPanel16.add(useUinsteadOfB = new JCheckBox("Use U instead of B for thermal factors"));
-	  useUinsteadOfB.setToolTipText("Select this to use Biso factor instead of dimensionless Uiso (also for anisotropic)");
-	  useUinsteadOfB.setSelected(m_Struct.isDebyeWallerModelDimensionLess());
-	  useUinsteadOfB.addActionListener(new ActionListener() {
+	  jPanel16.add(ckBxUseUinsteadOfB = new JCheckBox("Use U instead of B for thermal factors"));
+	  ckBxUseUinsteadOfB.setToolTipText("Select this to use Biso factor instead of dimensionless Uiso (also for anisotropic)");
+	  ckBxUseUinsteadOfB.setSelected(m_Struct.isDebyeWallerModelDimensionLess());
+	  ckBxUseUinsteadOfB.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-			  m_Struct.setDebyeWallerModelDimensionLess(useUinsteadOfB.isSelected());
+			  m_Struct.setDebyeWallerModelDimensionLess(ckBxUseUinsteadOfB.isSelected());
 		  }
 	  });
-	  jPanel16.add(quantityFromOccCB = new JCheckBox("Compute quantity from occupancy"));
-	  quantityFromOccCB.setToolTipText("Uncheck this to compute occupancy from quantity");
-	  quantityFromOccCB.setSelected(m_Struct.getQuantityFromOccupancy());
-	  quantityFromOccCB.addActionListener(new ActionListener() {
+	  jPanel16.add(ckBxQuantityFromOcc = new JCheckBox("Compute quantity from occupancy"));
+	  ckBxQuantityFromOcc.setToolTipText("Uncheck this to compute occupancy from quantity");
+	  ckBxQuantityFromOcc.setSelected(m_Struct.getQuantityFromOccupancy());
+	  ckBxQuantityFromOcc.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-			  m_Struct.setQuantityFromOccupancy(quantityFromOccCB.isSelected());
+			  m_Struct.setQuantityFromOccupancy(ckBxQuantityFromOcc.isSelected());
 		  }
 	  });
-	  jPanel16.add(useThisAtomCB = new JCheckBox("Use it in the computation"));
-	  useThisAtomCB.setToolTipText("Uncheck this to set this atom as dummy");
+	  jPanel16.add(ckBxUseThisAtomCB = new JCheckBox("Use it in the computation"));
+	  ckBxUseThisAtomCB.setToolTipText("Uncheck this to set this atom as dummy");
 
-	  sitelabellist = new JList();
-	  sitelabellist.setVisibleRowCount(6);
-	  sitelabellist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+	  lstSiteLabel = new JList();
+	  lstSiteLabel.setVisibleRowCount(6);
+	  lstSiteLabel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  JScrollPane sp = new JScrollPane();
-//		sp.setBorder(new LineBorder(Color.black));
-	  sp.getViewport().add(sitelabellist);
-	  tmpPanel.add(sp, BorderLayout.CENTER);
+	  sp.setViewportView(lstSiteLabel);
+	  pnlAtomSites.add(sp, BorderLayout.CENTER);
 
-	  tmpPanel.add(jPanel13 = new JPanel(new BorderLayout(0, 0)), BorderLayout.NORTH);
+	  pnlAtomSites.add(jPanel13 = new JPanel(new BorderLayout(0, 0)), BorderLayout.NORTH);
 	  jPanel13.add(new JLabel("Atom site list:"), BorderLayout.WEST);
 
-	  borderPanel1.add(jPanel20 = new JPanel(new BorderLayout()));
+	  pnlMainContainer.add(jPanel20 = new JPanel(new BorderLayout()));
 
-	  pnlAtomTypeList = new JAtomTypeListPane(parentD, false);
+	  pnlAtomTypeList = new JAtomTypeListPane(frmParent, false);
 	  pnlAtomTypeList.setBorder(new TitledBorder(
 			  new BevelBorder(BevelBorder.LOWERED), "Atom types in the site:"));
 
@@ -176,13 +179,13 @@ public class AtomPanel extends JPanel {
     jPanel17.add(new JLabel(Bstring));
 
     jPanel19.add(jPanel18 = new JPanel(new GridLayout(0, 1, 3, 3)), BorderLayout.CENTER);
-    jPanel18.add(atomquantity_incell = new JTextField("1", 6));
-    atomquantity_incell.setToolTipText("Set the number of atoms in the cell");
-    jPanel18.add(atomquantity = new JTextField("1", 6));
-    jPanel18.add(xcoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(ycoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(zcoord = new JTextField("0", Constants.FLOAT_FIELD));
-    jPanel18.add(Bfactor = new JTextField("0", Constants.FLOAT_FIELD));
+    jPanel18.add(txtAtomquantity_incell = new JTextField("1", 6));
+    txtAtomquantity_incell.setToolTipText("Set the number of atoms in the cell");
+    jPanel18.add(txtAtomQuantity = new JTextField("1", 6));
+    jPanel18.add(txtXCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    jPanel18.add(txtYCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    jPanel18.add(txtZCoord = new JTextField("0", Constants.FLOAT_FIELD));
+    jPanel18.add(txtBFactor = new JTextField("0", Constants.FLOAT_FIELD));
 
     initAtomList();
 
@@ -191,29 +194,29 @@ public class AtomPanel extends JPanel {
    * Initializes listener.
    */
 	public void initListeners() {
-    sitelabellist.addListSelectionListener(new ListSelectionListener() {
+    lstSiteLabel.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent event) {
         sitelabellist_ListSelect();
       }
     });
     if (m_Struct.getAtomList().size() > 0)
-      siteselected = 0;
+      iSiteSelectedIndex = 0;
   }
 /**
  * Retrieves data parameters for selected atom.
  */
   void retrieveAtom() {
-    if (siteselected >= 0) {
+    if (iSiteSelectedIndex >= 0) {
       AtomSite anatom = getSelectedSite();
       if (anatom != null) {
 	      pnlAtomTypeList.retrieveparlist();
-        anatom.setQuantity(atomquantity_incell.getText());
-        anatom.getOccupancy().setValue(atomquantity.getText());
-        anatom.getBfactor().setValue(Bfactor.getText());
-        anatom.getLocalCoordX().setValue(xcoord.getText());
-        anatom.getLocalCoordY().setValue(ycoord.getText());
-        anatom.getLocalCoordZ().setValue(zcoord.getText());
-        anatom.setDummy(!useThisAtomCB.isSelected());
+        anatom.setQuantity(txtAtomquantity_incell.getText());
+        anatom.getOccupancy().setValue(txtAtomQuantity.getText());
+        anatom.getBfactor().setValue(txtBFactor.getText());
+        anatom.getLocalCoordX().setValue(txtXCoord.getText());
+        anatom.getLocalCoordY().setValue(txtYCoord.getText());
+        anatom.getLocalCoordZ().setValue(txtZCoord.getText());
+        anatom.setDummy(!ckBxUseThisAtomCB.isSelected());
       }
       anatom.refreshPositions(false);
       anatom.refreshOccupancyAndQuantity();
@@ -235,22 +238,22 @@ public class AtomPanel extends JPanel {
     if (anatom != null) {
 	    String labels[] = {"Partial occupancy: "};
 	    pnlAtomTypeList.setList(anatom, 0, labels.length, labels);
-	    parentD.addComponenttolist(atomquantity, anatom.getOccupancy());
-      parentD.addComponenttolist(xcoord, anatom.getLocalCoordX());
-      parentD.addComponenttolist(ycoord, anatom.getLocalCoordY());
-      parentD.addComponenttolist(zcoord, anatom.getLocalCoordZ());
-      parentD.addComponenttolist(Bfactor, anatom.getBfactor());
+	    frmParent.addComponenttolist(txtAtomQuantity, anatom.getOccupancy());
+      frmParent.addComponenttolist(txtXCoord, anatom.getLocalCoordX());
+      frmParent.addComponenttolist(txtYCoord, anatom.getLocalCoordY());
+      frmParent.addComponenttolist(txtZCoord, anatom.getLocalCoordZ());
+      frmParent.addComponenttolist(txtBFactor, anatom.getBfactor());
     } else {
-      parentD.removeComponentfromlist(atomquantity);
-      parentD.removeComponentfromlist(xcoord);
-      parentD.removeComponentfromlist(ycoord);
-      parentD.removeComponentfromlist(zcoord);
-      parentD.removeComponentfromlist(Bfactor);
-	    atomquantity.setText("0");
-      xcoord.setText("0");
-      ycoord.setText("0");
-      zcoord.setText("0");
-      Bfactor.setText("0");
+      frmParent.removeComponentfromlist(txtAtomQuantity);
+      frmParent.removeComponentfromlist(txtXCoord);
+      frmParent.removeComponentfromlist(txtYCoord);
+      frmParent.removeComponentfromlist(txtZCoord);
+      frmParent.removeComponentfromlist(txtBFactor);
+	    txtAtomQuantity.setText("0");
+      txtXCoord.setText("0");
+      txtYCoord.setText("0");
+      txtZCoord.setText("0");
+      txtBFactor.setText("0");
     }
   }
   /**
@@ -268,8 +271,8 @@ public class AtomPanel extends JPanel {
    */
   public AtomSite getSelectedSite() {
 //		return getSelectedAtom();
-    if (siteselected >= 0 && siteselected < m_Struct.getAtomList().size())
-      return (AtomSite) m_Struct.getAtomList().elementAt(siteselected);
+    if (iSiteSelectedIndex >= 0 && iSiteSelectedIndex < m_Struct.getAtomList().size())
+      return (AtomSite) m_Struct.getAtomList().elementAt(iSiteSelectedIndex);
     else
       return null;
   }
@@ -277,7 +280,7 @@ public class AtomPanel extends JPanel {
    * Initializes atoms.
    */
   public void initAtomList() {
-    int sitenumb = m_Struct.getAtomList().setList(sitelabellist);
+    int sitenumb = m_Struct.getAtomList().setList(lstSiteLabel);
 //		atomnumber = loadatomtable();
 //		totalatomnumber.setText(String.valueOf(sitenumb));
     if (sitenumb > 0)
@@ -291,13 +294,13 @@ public class AtomPanel extends JPanel {
     if (anatom != null) {
       anatom.refreshPositions(false);
       anatom.refreshOccupancyAndQuantity();
-      atomquantity_incell.setText(anatom.getQuantity());
-      atomquantity.setText(anatom.getOccupancy().getValue());
-      xcoord.setText(anatom.getLocalCoordX().getValue());
-      ycoord.setText(anatom.getLocalCoordY().getValue());
-      zcoord.setText(anatom.getLocalCoordZ().getValue());
-      Bfactor.setText(anatom.getBfactor().getValue());
-      useThisAtomCB.setSelected(!anatom.isDummyAtom());
+      txtAtomquantity_incell.setText(anatom.getQuantity());
+      txtAtomQuantity.setText(anatom.getOccupancy().getValue());
+      txtXCoord.setText(anatom.getLocalCoordX().getValue());
+      txtYCoord.setText(anatom.getLocalCoordY().getValue());
+      txtZCoord.setText(anatom.getLocalCoordZ().getValue());
+      txtBFactor.setText(anatom.getBfactor().getValue());
+      ckBxUseThisAtomCB.setSelected(!anatom.isDummyAtom());
     }
     setAtomComponent(anatom);
   }
@@ -308,7 +311,7 @@ public class AtomPanel extends JPanel {
    *          the site position.
    */
   public void setatomsite(int numb) {
-    sitelabellist.setSelectedIndex(numb);
+    lstSiteLabel.setSelectedIndex(numb);
     setatomsite();
   }
 
@@ -321,7 +324,7 @@ public class AtomPanel extends JPanel {
   void addNewSiteAction() {
     // add a new atom site
     retrieveAtom();
-    siteselected = -1;
+    iSiteSelectedIndex = -1;
     m_Struct.addAtom();
     setAtomComponent(null);
 
@@ -337,7 +340,7 @@ public class AtomPanel extends JPanel {
   void duplicateAtoms() {
     AtomSite[] selAtom = getSelectedAtoms();
     if (selAtom != null) {
-      siteselected = -1;
+      iSiteSelectedIndex = -1;
       setAtomComponent(null);
       for (int i = 0; i < selAtom.length; i++) {
         AtomSite newAtom = (AtomSite) selAtom[i].getCopy(selAtom[i].getParent());
@@ -353,7 +356,7 @@ public class AtomPanel extends JPanel {
    * @return a AtomSite object array.
    */
   public AtomSite[] getSelectedAtoms() {
-    int[] selAtom = sitelabellist.getSelectedIndices();
+    int[] selAtom = lstSiteLabel.getSelectedIndices();
     AtomSite[] atomlist = null;
     if (selAtom != null) {
       atomlist = new AtomSite[selAtom.length];
@@ -368,9 +371,9 @@ public class AtomPanel extends JPanel {
    */
   public void removeSiteAction() {
     // remove selected atom
-    int[] selAtom = sitelabellist.getSelectedIndices();
+    int[] selAtom = lstSiteLabel.getSelectedIndices();
     if (selAtom != null) {
-      siteselected = -1;
+      iSiteSelectedIndex = -1;
       setAtomComponent(null);
       for (int i = selAtom.length - 1; i >= 0; i--)
         m_Struct.removeAtomAt(selAtom[i]);
@@ -381,8 +384,8 @@ public class AtomPanel extends JPanel {
    */
   void sitelabellist_ListSelect() {
     retrieveAtom();
-    if (sitelabellist != null) {
-      siteselected = sitelabellist.getSelectedIndex();
+    if (lstSiteLabel != null) {
+      iSiteSelectedIndex = lstSiteLabel.getSelectedIndex();
       setatomsite();
     }
   }
@@ -411,7 +414,7 @@ public class AtomPanel extends JPanel {
   public void show_xyz() {
     AtomSite anatom = getSelectedAtom();
     if (anatom != null) {
-      final myJFrame jf = new myJFrame(parentD, "xyz list of: " + anatom.toXRDcatString());
+      final myJFrame jf = new myJFrame(frmParent, "xyz list of: " + anatom.toXRDcatString());
       jf.createDefaultMenuBar();
       TableModel xyzModel = new xyzTableModel(anatom);
       JTable xyztable = new JTable(xyzModel);
@@ -463,16 +466,16 @@ public class AtomPanel extends JPanel {
 			else
 				y[i] = 0;
 		}
-		(new PlotSimpleData(this.parentD, x, y, false)).setVisible(true);
+		(new PlotSimpleData(this.frmParent, x, y, false)).setVisible(true);
 
 	}
   /**
    * Disposes panel.
    */
   public void dispose() {
-    sitelabellist = null;
+    lstSiteLabel = null;
 	  pnlAtomTypeList = null;
-    siteselected = -1;
+    iSiteSelectedIndex = -1;
   }
 
 }
