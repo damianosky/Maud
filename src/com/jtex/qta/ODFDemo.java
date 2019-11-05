@@ -79,7 +79,7 @@ public class ODFDemo {
 	     rec = rec.estimate(pf, 5);
 	    System.out.println("SanteFe ODF1 components number: " + rec.componentsNumber());
 
-        ODFOptions odfOptions = new ODFOptions(pf, Math.toRadians(5), new VonMisesFisher(Math.toRadians(5)));
+	    ODFOptions odfOptions = new ODFOptions(pf, Math.toRadians(5), new VonMisesFisher(Math.toRadians(5)));
         odfOptions.setGhostCorrection(false);
 
         ODF rec2 = rec.estimate(pf, odfOptions);

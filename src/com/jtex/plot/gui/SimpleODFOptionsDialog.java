@@ -5,7 +5,7 @@
  */
 package com.jtex.plot.gui;
 
-import com.jtex.qta.ODF;
+import com.jtex.qta.*;
 import com.jtex.qta.PoleFigure;
 import com.jtex.qta.kernel.DeLaValleePoussin;
 import com.jtex.qta.kernel.Kernel;
@@ -207,7 +207,7 @@ public class SimpleODFOptionsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    public com.jtex.qta.ODFOptions getODFPoptions() {
+    public ODFOptions getODFPoptions() {
 
         double hw = Double.parseDouble(jTextField1.getText());
         double res = Double.parseDouble(jTextField2.getText());
@@ -223,7 +223,7 @@ public class SimpleODFOptionsDialog extends javax.swing.JDialog {
                 break;
         }
 
-	    com.jtex.qta.ODFOptions opts = new com.jtex.qta.ODFOptions(pf, Math.toRadians(res), psi);
+        ODFOptions opts = new ODFOptions(pf, Math.toRadians(res), psi);
         opts.setGhostCorrection(jCheckBox1.isSelected());
 
         return opts;
