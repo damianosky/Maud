@@ -3,7 +3,7 @@
 
 <project name="Maud" default="copy_full" basedir=".">
 
-    <property file="${user.home}/.ant_maud.properties"/>
+    <property file="${user.home}/ant_maud.properties"/>
     <property name="dropbox" location="${user.home}/Dropbox/Maud"/>
     <property name="src" location="src"/>
     <property name="web" location="src/web"/>
@@ -19,7 +19,7 @@
     <!--property name="app_osx_beta" location="${user.home}/Projects/maud/osx"/>
     <property name="java_version" value="1.8"/>
     <property name="JAVA_HOME" location="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home"/-->
-
+	<echo message="Using Java version ${ant.java.version}."/>
 
     <target name="clean" description="Delete the build files.">
         <delete dir="${build_ant}"/>
@@ -46,7 +46,7 @@
         <mkdir dir="${build}"/>
         <mkdir dir="${build_ant}"/>
         <!-- Build everything -->
-        <javac destdir="${build_ant}" optimize="on" debug="on" target="${java_version}" encoding="UTF-8">
+        <javac destdir="${build_ant}" optimize="on" debug="on" target="${ant.java.version}" encoding="UTF-8">
             <src path="${src}"/>
             <!--exclude name="it/unitn/ing/jsginfo/**" /-->
             <!--exclude name="it/unitn/ing/jgraph/**" /-->
@@ -161,7 +161,7 @@
         <mkdir dir="build"/>
         <mkdir dir="${build_ant}"/>
         <!-- Build everything -->
-        <javac destdir="${build_ant}" optimize="on" debug="on" target="${java_version}" encoding="UTF-8">
+        <javac destdir="${build_ant}" optimize="on" debug="on" target="${ant.java.version}" encoding="UTF-8">
             <src path="${src}"/>
             <!--exclude name="it/unitn/ing/jsginfo/**" /-->
             <!--exclude name="it/unitn/ing/jgraph/**" /-->
