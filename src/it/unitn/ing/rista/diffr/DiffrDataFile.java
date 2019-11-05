@@ -1052,7 +1052,7 @@ public class DiffrDataFile extends XRDcat {
       getBkgOscillator(i).preparecomputing();
 
     reflectivityStats = needReflectivityStatistic();
-    Instrument ainstrument = dataset.getInstrument();
+    //Instrument ainstrument = dataset.getInstrument();
     if (ainstrument != null) {
       IntensityCalibration intcal = ainstrument.getIntensityCalibration();
       if (intcal != null)
