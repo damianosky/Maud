@@ -1391,11 +1391,11 @@ public class Constants {
     Class[] parameters = new Class[]{URL.class};
 
 	  // Java 8
-   // URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
     // Java 9
-	  ClassLoader parent = ClassLoader.getPlatformClassLoader();
-	  URLClassLoader sysloader = new URLClassLoader(u, parent);
+	//  ClassLoader parent = ClassLoader.getPlatformClassLoader();
+	//  URLClassLoader sysloader = new URLClassLoader(u, parent);
 
 //    ClassLoader aCL = Thread.currentThread().getContextClassLoader();
 //    URLClassLoader aUrlCL = new URLClassLoader(urls, sysloader);
@@ -1421,11 +1421,11 @@ public class Constants {
     Class[] parameters = new Class[]{URL.class};
 
     // Java 8
-//    URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
 	  // Java 9
-	  ClassLoader parent = ClassLoader.getPlatformClassLoader();
-	  URLClassLoader sysloader = new URLClassLoader(u, parent);
+//	  ClassLoader parent = ClassLoader.getPlatformClassLoader();
+//	  URLClassLoader sysloader = new URLClassLoader(u, parent);
 
 //    ClassLoader aCL = Thread.currentThread().getContextClassLoader();
 //    URLClassLoader aUrlCL = new URLClassLoader(urls, sysloader);
