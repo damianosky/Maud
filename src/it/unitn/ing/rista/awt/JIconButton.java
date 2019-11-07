@@ -20,9 +20,7 @@
 
 package it.unitn.ing.rista.awt;
 
-import java.net.*;
 import java.net.URL;
-import java.awt.*;
 import javax.swing.*;
 
 import it.unitn.ing.rista.util.*;
