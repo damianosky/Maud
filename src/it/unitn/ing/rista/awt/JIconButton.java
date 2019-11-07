@@ -21,6 +21,7 @@
 package it.unitn.ing.rista.awt;
 
 import java.net.*;
+import java.net.URL;
 import java.awt.*;
 import javax.swing.*;
 
@@ -30,40 +31,100 @@ import it.unitn.ing.rista.util.*;
  *  The JIconButton is an extension of the JButton class to include an icon
  *
  *
- * @version $Revision: 1.4 $, $Date: 2004/11/18 09:30:48 $
- * @author Luca Lutterotti
+ * @version $Revision: 1.5 $, $Date: 2017/07/18 09:30:48 $
+ * @author Luca Lutterotti, revised by Damiano Martorelli.
  * @since JDK1.1
  */
 
 public class JIconButton extends JButton {
 
-  public JIconButton(String icon, String text) {
+  public JIconButton(String icon_name, String text) {
     super(text);
-    if (icon != null &&
+    if (icon_name != null &&
           (text.equals("") || MaudPreferences.getBoolean("gui.useIconsInButtons", !Constants.macosx)))
-      setIcon(new ImageIcon(Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon)));
+    {  
+      //setIcon(new ImageIcon(Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon)));
+      URL url = Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon_name);
+      if (url != null)
+      {
+        try
+        {
+          setIcon(new ImageIcon(url));
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
+      }
+    }
   }
-
-  public JIconButton(String icon) {
-    this(icon, "");
+  
+  /**
+   * Class constructor.
+   * 
+   * @param icon_name
+   *          a valid icon name.
+   */
+  public JIconButton(String icon_name) {
+    this(icon_name, "");
   }
-
+  
+  /**
+   * Default constructor.
+   */
   public JIconButton() {
     super();
   }
-
-  public JIconButton(String icon, String text, String actionCommand) {
-    this(icon, text);
+  
+  /**
+   * Class constructor.
+   * 
+   * @param icon_name
+   *          a valid icon name.
+   * @param text
+   *          a text to be showd on the button.
+   * @param actionCommand
+   */
+  public JIconButton(String icon_name, String text, String actionCommand) {
+    this(icon_name, text);
     setActionCommand(actionCommand);
   }
 
-  public JIconButton(String icon, String text, String actionCommand, String toolTipText) {
-    this(icon, text, actionCommand);
+  /**
+   * Class constructor.
+   * 
+   * @param icon_name
+   *          a valid icon name.
+   * @param text
+   *          a text to be showd on the button.
+   * @param actionCommand
+   * @param toolTipText
+   */
+  public JIconButton(String icon_name, String text, String actionCommand, String toolTipText) {
+    this(icon_name, text, actionCommand);
     setToolTipText(toolTipText);
   }
-
-  public void setIcon(String icon) {
-    setIcon(new ImageIcon(Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon)));
+  
+  /**
+   * Assigns icon according to the name passed.
+   * 
+   * @param icon_name
+   *          a valid icon name.
+   */
+  public void setIcon(String icon_name) {
+    URL url = Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon_name);
+    if (url != null)
+    {
+      try
+      {
+        setIcon(new ImageIcon(url));
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }    
+    //setIcon(new ImageIcon(Misc.getResourceURL(Constants.imagesJar, Constants.iconfolder + icon)));
   }
 
 }
