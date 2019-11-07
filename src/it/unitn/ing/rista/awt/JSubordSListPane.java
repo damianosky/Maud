@@ -38,7 +38,7 @@ public class JSubordSListPane extends JSubordListPane {
   }
 
   public void setparameterlist() {
-    if (itsparent != null && thelist != null) {
+    if (itsparent != null && lstAtomicElements != null) {
       XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].selectedElement();
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
@@ -47,7 +47,7 @@ public class JSubordSListPane extends JSubordListPane {
   }
 
   public void retrieveparlist(int numb) {
-    if (numb >= 0 && itsparent != null && thelist != null) {
+    if (numb >= 0 && itsparent != null && lstAtomicElements != null) {
       XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].elementAt(numb);
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
@@ -56,7 +56,7 @@ public class JSubordSListPane extends JSubordListPane {
   }
 
   public void retrieveparlist() {
-    if (selected >= 0 && itsparent != null && thelist != null) {
+    if (selected >= 0 && itsparent != null && lstAtomicElements != null) {
       XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].elementAt(selected);
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)

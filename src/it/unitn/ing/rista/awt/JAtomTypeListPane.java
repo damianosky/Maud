@@ -32,28 +32,44 @@ import java.awt.event.*;
 /**
  * The JAtomTypeListPane is a class ....
  *
- * @author Luca Lutterotti
- * @version $Revision: 1.0 $, $Date: 08/06/16 10:55 $
+ * @author Luca Lutterotti, revised by Damiano Martorelli.
+ * @version $Revision: 1.2 $, $Date: 2017/08/04 10:55 $
  * @since JDK1.1
  */
 
 public class JAtomTypeListPane extends JSubordListPane {
 
-	JButton atomtypechoice = null;
+  
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID  = -5622779308651768257L;
+  /**
+   * Defines the button for selecting atom from periodic table.
+   */
+  protected JButton         btnAtomTypeChoice = new JIconButton("PeriodicTable.gif");
 
-	public JAtomTypeListPane(Frame parent, boolean showTotal) {
-		super(parent, showTotal);
-	}
+  /**
+   * Class constructor.
+   * 
+   * @param parent
+   *          is the reference to the parent frame.
+   * @param showTotal
+   *          is the flag which commands if all is shown.
+   */
+  public JAtomTypeListPane(Frame parent, boolean showTotal) {
+	super(parent, showTotal);
+  }
 
 	public void addCustomControlsToFieldsPanel() {
-		JPanel jPanel18;
+		JPanel pnlAtomButtons = new JPanel(new FlowLayout());
 
-		fieldsPanel.add(jPanel18 = new JPanel(new FlowLayout()), BorderLayout.NORTH);
+		fieldsPanel.add(pnlAtomButtons, BorderLayout.NORTH);
 
-		jPanel18.add(new JLabel("Atom type:"));
-		jPanel18.add(atomtypechoice = new JIconButton("PeriodicTable.gif"));
-		atomtypechoice.setToolTipText("Press to select the atom type");
-		atomtypechoice.addActionListener(new ActionListener() {
+		pnlAtomButtons.add(new JLabel("Atom type:"));
+		pnlAtomButtons.add(btnAtomTypeChoice);
+		btnAtomTypeChoice.setToolTipText("Press to select the atom type");
+		btnAtomTypeChoice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				chooseTheAtom();
 			}
@@ -65,12 +81,14 @@ public class JAtomTypeListPane extends JSubordListPane {
 			}
 		});
 
-		jPanel18.add(infoButton);
+		pnlAtomButtons.add(infoButton);
 
 
 	}
-
-	public void setparameterlist() {
+	/**
+	 * Sets the parameters for atom.
+	 */
+	public void setParameterList() {
 		if (itsparent != null) {
 			AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
 			if (scatterer != null && scatterer != selectedObject) {
@@ -87,21 +105,28 @@ public class JAtomTypeListPane extends JSubordListPane {
 						((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
 					}*/
 				}
-				atomtypechoice.setText(scatterer.getAtomSymbol());
+				btnAtomTypeChoice.setText(scatterer.getAtomSymbol());
 			}
 		}
 	}
 
-	void chooseTheAtom() {
+	/**
+	 * Activates the periodic table for atom selection.
+	 */
+	protected void chooseTheAtom() {
 		AtomScatterer scatterer = null;
 		if (itsparent != null) {
 			scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
 			if (scatterer != null)
 				ChooseAtomD.getAtomType(getFrameParent(), scatterer);
-			atomtypechoice.setText(scatterer.getAtomSymbol());
+			btnAtomTypeChoice.setText(scatterer.getAtomSymbol());
 		}
 	}
-
+	  
+	/**
+	 * Shows the info panel with plots of absorption (total and photo), scattering
+	 * (coherent and incoherent).
+	 */
 	public void showInfoPanel() {
 		AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
 		if (scatterer == null)

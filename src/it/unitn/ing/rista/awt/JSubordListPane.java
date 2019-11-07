@@ -32,77 +32,81 @@ import it.unitn.ing.rista.diffr.FilePar;
 /**
  * The JSubordListPane is a class
  *
- * @version $Revision: 1.8 $, $Date: 2006/07/20 13:39:02 $
- * @author Luca Lutterotti
+ * @version $Revision: 1.8 $, $Date: 2017/08/04 10:39:02 $
+ * @author Luca Lutterotti, revised by Damiano Martorelli
  * @since JDK1.1
  */
 
 public class JSubordListPane extends JPanel {
-  //insert class definition here
 
-  JTextField totTF = null;
-  JList thelist;
-  JButton addB;
+  protected JTextField txtTotTF = null;
+  protected JList lstAtomicElements;
+  protected JButton btnAdd = new JIconButton("Plus.gif", "add term");
   JTextField[] valueTF = null;
   XRDcat itsparent = null;
   int theindex = 0, selected = -1;
   JPanel fieldsPanel;
   int fieldNumber;
   Frame theparent = null;
-
+  /**
+   * Class constructor.
+   * 
+   * @param parent
+   *          is the frame parent of the panel.
+   * @param showTotal
+   */
   public JSubordListPane(Frame parent, boolean showTotal) {
     super();
     setFrameParent(parent);
 
-    JPanel jp1, jp2, jp3;
+    JPanel pnlNorth, pnlNorthParams, pnlParams, pnlBtnContainer;
 
     setLayout(new BorderLayout(3, 3));
-    jp1 = new JPanel();
-    jp1.setLayout(new BorderLayout(3, 3));
-    add("North", jp1);
+    pnlNorth = new JPanel();
+    pnlNorth.setLayout(new BorderLayout(3, 3));
+    add("North", pnlNorth);
     if (showTotal) {
-      jp2 = new JPanel();
-      jp2.setLayout(new BorderLayout(3, 3));
-      jp1.add("North", jp2);
-      jp3 = new JPanel();
-      jp3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-      jp2.add("East", jp3);
-      jp3.add(new JLabel("Total parameter:"));
-      totTF = new JTextField(4);
-      totTF.setEditable(false);
-      totTF.setText("0");
-      jp3.add(totTF);
+      pnlNorthParams = new JPanel();
+      pnlNorthParams.setLayout(new BorderLayout(3, 3));
+      pnlNorth.add("North", pnlNorthParams);
+      pnlParams = new JPanel();
+      pnlParams.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+      pnlNorthParams.add("East", pnlParams);
+      pnlParams.add(new JLabel("Total parameter:"));
+      txtTotTF = new JTextField(4);
+      txtTotTF.setEditable(false);
+      txtTotTF.setText("0");
+      pnlParams.add(txtTotTF);
     }
-    thelist = new JList();
-    thelist.setVisibleRowCount(4);
-    thelist.setPrototypeCellValue("123456789012");
-    thelist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    JScrollPane sp1 = new JScrollPane();
-//		sp1.setBorder(new LineBorder(Color.black));
-    sp1.getViewport().add(thelist);
-    jp1.add(BorderLayout.CENTER, sp1);
+    lstAtomicElements = new JList();
+    lstAtomicElements.setVisibleRowCount(4);
+    lstAtomicElements.setPrototypeCellValue("123456789012");
+    lstAtomicElements.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    JScrollPane scrlPaneAtomicElements = new JScrollPane();
+    scrlPaneAtomicElements.setViewportView(lstAtomicElements);
+    pnlNorth.add(BorderLayout.CENTER, scrlPaneAtomicElements);
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new FlowLayout());
-    jp1.add(BorderLayout.WEST, buttonPanel);
-    jp3 = new JPanel();
-    jp3.setLayout(new GridLayout(2, 1, 3, 3));
-    buttonPanel.add(jp3);
-    jp3.add(addB = new JIconButton("Plus.gif", "add term"));
-    final JRemoveButton removeB = new JRemoveButton("Minus.gif", "remove term");
-    jp3.add(removeB);
-    removeB.addActionListener(new ActionListener() {
+    JPanel pnlButtons = new JPanel();
+    pnlButtons.setLayout(new FlowLayout());
+    pnlNorth.add(BorderLayout.WEST, pnlButtons);
+    pnlBtnContainer = new JPanel();
+    pnlBtnContainer.setLayout(new GridLayout(2, 1, 3, 3));
+    pnlButtons.add(pnlBtnContainer);
+    pnlBtnContainer.add(btnAdd);
+    final JRemoveButton btnRemove = new JRemoveButton("Minus.gif", "remove term");
+    pnlBtnContainer.add(btnRemove);
+    btnRemove.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!Constants.confirmation || Utility.areYouSureToRemove("Remove the selected object?"))
           removeB_Clicked();
       }
     });
-    jp2 = new JPanel();
-    jp2.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
-    add("Center", jp2);
+    pnlNorthParams = new JPanel();
+    pnlNorthParams.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
+    add("Center", pnlNorthParams);
     fieldsPanel = new JPanel();
     fieldsPanel.setLayout(new BorderLayout(6, 6));
-    jp2.add(fieldsPanel);
+    pnlNorthParams.add(fieldsPanel);
 	  initListener();
 
 	  addCustomControlsToFieldsPanel();
@@ -137,13 +141,13 @@ public class JSubordListPane extends JPanel {
 
   public void initListener() {
 	  if (buttonListener == null)
-    addB.addActionListener(buttonListener = new ActionListener() {
+    btnAdd.addActionListener(buttonListener = new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         addB_Clicked();
       }
     });
 	  if (listSelection == null)
-    thelist.addListSelectionListener(listSelection = new ListSelectionListener() {
+    lstAtomicElements.addListSelectionListener(listSelection = new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent event) {
         thelist_ListSelect();
       }
@@ -151,8 +155,8 @@ public class JSubordListPane extends JPanel {
   }
 
 	public void removeListener() {
-		addB.removeActionListener(buttonListener);
-		thelist.removeListSelectionListener(listSelection);
+		btnAdd.removeActionListener(buttonListener);
+		lstAtomicElements.removeListSelectionListener(listSelection);
 		listSelection = null;
 		buttonListener = null;
 	}
@@ -218,9 +222,9 @@ public class JSubordListPane extends JPanel {
     setFields(labels);
     if (itsparent != null) {
 	    selected = -1;
-      int numb = itsparent.subordinateloopField[theindex].setList(thelist);
-      if (totTF != null)
-        totTF.setText(String.valueOf(numb));
+      int numb = itsparent.subordinateloopField[theindex].setList(lstAtomicElements);
+      if (txtTotTF != null)
+        txtTotTF.setText(String.valueOf(numb));
       if (numb > 0) {
         setparameterlist(0);
 	      selected = 0;
@@ -232,7 +236,7 @@ public class JSubordListPane extends JPanel {
   public void setparameterlist(int numb) {
     int totnumb = itsparent.numberofelementSubL(theindex);
     if (totnumb > numb) {
-      thelist.setSelectedIndex(numb);
+      lstAtomicElements.setSelectedIndex(numb);
       setparameterlist();
     }
   }
@@ -272,7 +276,7 @@ public class JSubordListPane extends JPanel {
 
   public void setparameterField(String label) {
     if (itsparent != null)
-      itsparent.subordinateloopField[theindex].setLabelAt(label, thelist.getSelectedIndex());
+      itsparent.subordinateloopField[theindex].setLabelAt(label, lstAtomicElements.getSelectedIndex());
   }
 
   public String gettheLabel() {
@@ -281,41 +285,41 @@ public class JSubordListPane extends JPanel {
 
   void addB_Clicked() {
     // add a new parameter
-    if (itsparent != null && thelist != null) {
+    if (itsparent != null && lstAtomicElements != null) {
       retrieveparlist(selected);
       selected = -1;
       itsparent.addsubordinateloopField(theindex);
       int numb = itsparent.numberofelementSubL(theindex);
-      if (totTF != null)
-        totTF.setText(String.valueOf(numb));
+      if (txtTotTF != null)
+        txtTotTF.setText(String.valueOf(numb));
       setparameterlist(numb - 1);
     }
   }
 
   void removeB_Clicked() {
     // remove selected parameter
-    if (itsparent != null && thelist != null)
-      if (thelist.getSelectedIndex() >= 0) {
+    if (itsparent != null && lstAtomicElements != null)
+      if (lstAtomicElements.getSelectedIndex() >= 0) {
         selected = -1;
         if (itsparent.removeselSubLField(theindex)) {
           int numb = itsparent.numberofelementSubL(theindex);
-          if (totTF != null)
-            totTF.setText(String.valueOf(numb));
+          if (txtTotTF != null)
+            txtTotTF.setText(String.valueOf(numb));
         }
         setparameterlist(0);
       }
   }
 
   void thelist_ListSelect() {
-    if (thelist != null) {
+    if (lstAtomicElements != null) {
       retrieveparlist(selected);
-      selected = thelist.getSelectedIndex();
+      selected = lstAtomicElements.getSelectedIndex();
       setparameterlist(selected);
     }
   }
 
   public void dispose() {
-    thelist = null;
+    lstAtomicElements = null;
     itsparent = null;
   }
 
