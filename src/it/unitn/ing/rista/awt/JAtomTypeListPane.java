@@ -64,7 +64,7 @@ public class JAtomTypeListPane extends JSubordListPane {
 	public void addCustomControlsToFieldsPanel() {
 		JPanel pnlAtomButtons = new JPanel(new FlowLayout());
 
-		fieldsPanel.add(pnlAtomButtons, BorderLayout.NORTH);
+		this.pnlCenter.add(pnlAtomButtons, BorderLayout.NORTH);
 
 		pnlAtomButtons.add(new JLabel("Atom type:"));
 		pnlAtomButtons.add(btnAtomTypeChoice);
