@@ -42,12 +42,13 @@ public class JSubordListPane extends JPanel {
   protected JTextField txtTotTF = null;
   protected JList lstAtomicElements;
   protected JButton btnAdd = new JIconButton("Plus.gif", "add term");
-  JTextField[] valueTF = null;
-  XRDcat itsparent = null;
-  int theindex = 0, selected = -1;
-  JPanel fieldsPanel;
+  protected JTextField[] valueTF = null;
+  protected XRDcat itsparent = null;
+  protected int theindex = 0, selected = -1;
+  protected JPanel                pnlCenter          = new JPanel();
+  protected JPanel pnlSouth          = new JPanel();
   int fieldNumber;
-  Frame theparent = null;
+  protected Frame frmParent = null;
   /**
    * Class constructor.
    * 
@@ -94,19 +95,19 @@ public class JSubordListPane extends JPanel {
     pnlButtons.add(pnlBtnContainer);
     pnlBtnContainer.add(btnAdd);
     final JRemoveButton btnRemove = new JRemoveButton("Minus.gif", "remove term");
+    btnRemove.setIcon(new ImageIcon(JSubordListPane.class.getResource("/images/maud_icon16.gif")));
     pnlBtnContainer.add(btnRemove);
     btnRemove.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
         if (!Constants.confirmation || Utility.areYouSureToRemove("Remove the selected object?"))
-          removeB_Clicked();
+          btnRemove_Clicked();
       }
     });
-    pnlNorthParams = new JPanel();
-    pnlNorthParams.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 6));
-    add("Center", pnlNorthParams);
-    fieldsPanel = new JPanel();
-    fieldsPanel.setLayout(new BorderLayout(6, 6));
-    pnlNorthParams.add(fieldsPanel);
+    //
+    add(pnlCenter, BorderLayout.CENTER);
+    //
+    pnlSouth.setLayout(new BorderLayout(6, 6));
+    pnlCenter.add(pnlSouth);
 	  initListener();
 
 	  addCustomControlsToFieldsPanel();
@@ -118,11 +119,11 @@ public class JSubordListPane extends JPanel {
 	}
 
   public void setFrameParent(Frame parent) {
-    theparent = parent;
+    frmParent = parent;
   }
 
   public Frame getFrameParent() {
-    return theparent;
+    return frmParent;
   }
 
   public FilePar getFileParent() {
@@ -176,7 +177,7 @@ public class JSubordListPane extends JPanel {
 				valueTF[i] = null;
 			}
 		}
-		fieldsPanel.removeAll();
+		pnlSouth.removeAll();
 		addCustomControlsToFieldsPanel();
 //		System.out.println("New JTextField");
     valueTF = new JTextField[fieldNumber];
@@ -185,7 +186,7 @@ public class JSubordListPane extends JPanel {
       jp1.setLayout(new GridLayout(0, 2, 3, 3));
     else
       jp1.setLayout(new GridLayout(0, 1, 3, 3));
-    fieldsPanel.add(BorderLayout.CENTER, jp1);
+    pnlSouth.add(BorderLayout.CENTER, jp1);
     for (int i = 0; i < fieldNumber; i++) {
       JPanel jp2 = new JPanel();
       jp2.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 3));
@@ -204,8 +205,8 @@ public class JSubordListPane extends JPanel {
       });
       jp1.add(jp2);
     }
-		fieldsPanel.revalidate();
-		fieldsPanel.repaint();
+		pnlSouth.revalidate();
+		pnlSouth.repaint();
   }
 
   public void setList(XRDcat aparent, int index, int number, String[] labels) {
@@ -296,7 +297,7 @@ public class JSubordListPane extends JPanel {
     }
   }
 
-  void removeB_Clicked() {
+  void btnRemove_Clicked() {
     // remove selected parameter
     if (itsparent != null && lstAtomicElements != null)
       if (lstAtomicElements.getSelectedIndex() >= 0) {
