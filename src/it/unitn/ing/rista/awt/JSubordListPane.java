@@ -95,7 +95,7 @@ public class JSubordListPane extends JPanel {
     pnlButtons.add(pnlBtnContainer);
     pnlBtnContainer.add(btnAdd);
     final JRemoveButton btnRemove = new JRemoveButton("Minus.gif", "remove term");
-    btnRemove.setIcon(new ImageIcon(JSubordListPane.class.getResource("/images/maud_icon16.gif")));
+
     pnlBtnContainer.add(btnRemove);
     btnRemove.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
