@@ -28,7 +28,11 @@ import javax.swing.*;
 import it.unitn.ing.rista.util.*;
 
 /**
- *  The JIconButton is an extension of the JButton class to include an icon
+ * <p>
+ * The JIconButton is an extension of the JButton class to include an icon on
+ * the button. The path is defined by MAUD preferences, while the icon is passed
+ * through the name.
+ * </p>
  *
  *
  * @version $Revision: 1.5 $, $Date: 2017/07/18 09:30:48 $
@@ -37,7 +41,14 @@ import it.unitn.ing.rista.util.*;
  */
 
 public class JIconButton extends JButton {
-
+  /**
+   * Class constructor.
+   * 
+   * @param icon_name
+   *          a valid icon name.
+   * @param text
+   *          a text to be showd on the button.
+   */
   public JIconButton(String icon_name, String text) {
     super(text);
     if (icon_name != null &&
