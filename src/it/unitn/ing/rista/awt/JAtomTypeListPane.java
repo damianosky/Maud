@@ -47,7 +47,7 @@ public class JAtomTypeListPane extends JSubordListPane {
   /**
    * Defines the button for selecting atom from periodic table.
    */
-  protected static JButton         btnAtomTypeChoice = new JIconButton("PeriodicTable.gif");
+  protected JButton         btnAtomTypeChoice;
 
   /**
    * Class constructor.
@@ -68,6 +68,7 @@ public class JAtomTypeListPane extends JSubordListPane {
 	JPanel pnlAtomButtons = new JPanel(new FlowLayout());
 
 	this.pnlCenter.add(pnlAtomButtons, BorderLayout.NORTH);
+	this.btnAtomTypeChoice = new JIconButton("PeriodicTable.gif");
 
 	pnlAtomButtons.add(new JLabel("Atom type:"));
 	pnlAtomButtons.add(btnAtomTypeChoice);
