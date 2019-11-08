@@ -98,18 +98,18 @@ public class JAtomTypeListPane extends JSubordListPane {
    * Sets the parameters for atom.
    */
   public void setParameterList() {
-    if (itsparent != null) {
-      AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
+    if (objParent != null) {
+      AtomScatterer scatterer = (AtomScatterer) objParent.subordinateloopField[theindex].selectedElement();
       if (scatterer != null && scatterer != selectedObject) {
         selectedObject = scatterer;
         for (int i = 0; i < fieldNumber; i++) {
           Parameter apar = scatterer.parameterField[i];
           if (apar != null) {
-            ((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
+            ((myJFrame) getFrameParent()).removeComponentfromlist(txtValue[i]);
             // System.out.println("Adding jatom: " + i + " " +
             // valueTF[i].getText());
-            ((myJFrame) getFrameParent()).addComponenttolist(valueTF[i], apar);
-            valueTF[i].setText(apar.getValue());
+            ((myJFrame) getFrameParent()).addComponenttolist(txtValue[i], apar);
+            txtValue[i].setText(apar.getValue());
           } /*
              * else { // System.out.println("Removing jatom: " + i + " " +
              * valueTF[i].getText()); ((myJFrame)
@@ -126,8 +126,8 @@ public class JAtomTypeListPane extends JSubordListPane {
    */
   protected void chooseTheAtom() {
     AtomScatterer scatterer = null;
-    if (itsparent != null) {
-      scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
+    if (objParent != null) {
+      scatterer = (AtomScatterer) objParent.subordinateloopField[theindex].selectedElement();
       if (scatterer != null)
         ChooseAtomD.getAtomType(getFrameParent(), scatterer);
       btnAtomTypeChoice.setText(scatterer.getAtomSymbol());
@@ -139,7 +139,7 @@ public class JAtomTypeListPane extends JSubordListPane {
    * (coherent and incoherent).
    */
   public void showInfoPanel() {
-    AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
+    AtomScatterer scatterer = (AtomScatterer) objParent.subordinateloopField[theindex].selectedElement();
     if (scatterer == null)
       return;
     int atomicNumber = scatterer.getAtomicNumber();

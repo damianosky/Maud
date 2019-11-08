@@ -3,25 +3,25 @@
  *
  * Copyright (c) 1997 Luca Lutterotti All Rights Reserved.
  *
- * This software is the research result of Luca Lutterotti and it is
- * provided as it is as confidential and proprietary information.
- * You shall not disclose such Confidential Information and shall use
- * it only in accordance with the terms of the license agreement you
- * entered into with the author.
+ * This software is the research result of Luca Lutterotti and it is provided as
+ * it is as confidential and proprietary information. You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with the author.
  *
- * THE AUTHOR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
- * SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. THE AUTHOR SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ * THE AUTHOR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+ * NON-INFRINGEMENT. THE AUTHOR SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY
+ * LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ * DERIVATIVES.
  *
  */
 
 package it.unitn.ing.rista.awt;
 
-import it.unitn.ing.rista.diffr.*;
 import java.awt.Frame;
+
+import it.unitn.ing.rista.diffr.XRDcat;
 
 /**
  * The JSubordSListPane is a class
@@ -38,29 +38,29 @@ public class JSubordSListPane extends JSubordListPane {
   }
 
   public void setparameterlist() {
-    if (itsparent != null && lstAtomicElements != null) {
-      XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].selectedElement();
+    if (objParent != null && lstAtomicElements != null) {
+      XRDcat obj = (XRDcat) objParent.subordinateloopField[theindex].selectedElement();
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
-          valueTF[i].setText(obj.getString(i));
+          txtValue[i].setText(obj.getString(i));
     }
   }
 
   public void retrieveparlist(int numb) {
-    if (numb >= 0 && itsparent != null && lstAtomicElements != null) {
-      XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].elementAt(numb);
+    if (numb >= 0 && objParent != null && lstAtomicElements != null) {
+      XRDcat obj = (XRDcat) objParent.subordinateloopField[theindex].elementAt(numb);
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
-          obj.setString(i, valueTF[i].getText());
+          obj.setString(i, txtValue[i].getText());
     }
   }
 
   public void retrieveparlist() {
-    if (selected >= 0 && itsparent != null && lstAtomicElements != null) {
-      XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].elementAt(selected);
+    if (selected >= 0 && objParent != null && lstAtomicElements != null) {
+      XRDcat obj = (XRDcat) objParent.subordinateloopField[theindex].elementAt(selected);
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
-          obj.setString(i, valueTF[i].getText());
+          obj.setString(i, txtValue[i].getText());
     }
   }
 

@@ -3,31 +3,45 @@
  *
  * Copyright (c) 1997 Luca Lutterotti All Rights Reserved.
  *
- * This software is the research result of Luca Lutterotti and it is
- * provided as it is as confidential and proprietary information.
- * You shall not disclose such Confidential Information and shall use
- * it only in accordance with the terms of the license agreement you
- * entered into with the author.
+ * This software is the research result of Luca Lutterotti and it is provided as
+ * it is as confidential and proprietary information. You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with the author.
  *
- * THE AUTHOR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
- * SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. THE AUTHOR SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ * THE AUTHOR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+ * NON-INFRINGEMENT. THE AUTHOR SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY
+ * LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ * DERIVATIVES.
  *
  */
 
 package it.unitn.ing.rista.awt;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
-import it.unitn.ing.rista.util.*;
-import it.unitn.ing.rista.diffr.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import it.unitn.ing.rista.diffr.FilePar;
+import it.unitn.ing.rista.diffr.Parameter;
+import it.unitn.ing.rista.diffr.XRDcat;
+import it.unitn.ing.rista.util.Constants;
 
 /**
  * The JSubordListPane is a class
@@ -39,18 +53,20 @@ import it.unitn.ing.rista.diffr.FilePar;
 
 public class JSubordListPane extends JPanel {
 
-  protected JTextField txtTotTF = null;
-  protected JList lstAtomicElements;
-  protected JButton btnAdd = new JIconButton("Plus.gif", "add term");
-  protected JTextField[] valueTF = null;
-  protected XRDcat itsparent = null;
-  protected int theindex = 0, selected = -1;
-  protected JPanel                pnlCenter          = new JPanel();
-  protected JPanel pnlSouth          = new JPanel();
-  int fieldNumber;
-  protected Frame frmParent = null;
-  protected ActionListener buttonListener = null;
-  protected ListSelectionListener listSelection = null;
+  protected JTextField            txtTotTF          = null;
+  protected JList                 lstAtomicElements;
+  protected JButton               btnAdd            = new JIconButton("Plus.gif", "add term");
+  protected JTextField[]          txtValue          = null;
+  protected XRDcat                objParent         = null;
+  protected int                   theindex          = 0;
+  protected int                   selected          = -1;
+  protected JPanel                pnlCenter         = new JPanel();
+  protected JPanel                pnlSouth          = new JPanel();
+  protected int                   fieldNumber;
+  protected Frame                 frmParent         = null;
+  protected ActionListener        actButtonListener = null;
+  protected ListSelectionListener listSelection     = null;
+
   /**
    * Class constructor.
    * 
@@ -110,26 +126,29 @@ public class JSubordListPane extends JPanel {
     //
     pnlSouth.setLayout(new BorderLayout(6, 6));
     pnlCenter.add(pnlSouth);
-	initListener();
+    initListener();
     //
-	addCustomControlsToFieldsPanel();
+    addCustomControlsToFieldsPanel();
   }
 
   public void addCustomControlsToFieldsPanel() {
 
   }
+
   /**
    * Set the parent frame.
    * 
-   * @param parent th reference to parent frame.
+   * @param parent
+   *          the reference to parent frame.
    */
   public void setFrameParent(Frame parent) {
     frmParent = parent;
   }
+
   /**
    * Get the parent frame.
    * 
-   * @return parent th reference to parent frame.
+   * @return parent the reference to parent frame.
    */
   public Frame getFrameParent() {
     return frmParent;
@@ -146,47 +165,54 @@ public class JSubordListPane extends JPanel {
       return null;
   }
 
-	public void initListener() {
-	  if (buttonListener == null)
-    btnAdd.addActionListener(buttonListener = new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        addB_Clicked();
-      }
-    });
-	  if (listSelection == null)
-    lstAtomicElements.addListSelectionListener(listSelection = new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent event) {
-        thelist_ListSelect();
-      }
-    });
+  /**
+   * Init button and list listeners
+   */
+  public void initListener() {
+    if (actButtonListener == null)
+      btnAdd.addActionListener(actButtonListener = new ActionListener() {
+        public void actionPerformed(ActionEvent event) {
+          btnAdd_Clicked();
+        }
+      });
+    if (listSelection == null)
+      lstAtomicElements.addListSelectionListener(listSelection = new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent event) {
+          doAtomicElements_ListSelect();
+        }
+      });
   }
 
-	public void removeListener() {
-		btnAdd.removeActionListener(buttonListener);
-		lstAtomicElements.removeListSelectionListener(listSelection);
-		listSelection = null;
-		buttonListener = null;
-	}
+  /**
+   * Remove listeners
+   */
+  public void removeListener() {
+    btnAdd.removeActionListener(actButtonListener);
+    lstAtomicElements.removeListSelectionListener(listSelection);
+    listSelection = null;
+    actButtonListener = null;
+  }
 
-	public void setFields(String[] labels) {
-		if (valueTF != null) {
-			for (int i = 0; i < valueTF.length; i++) {
-//				System.out.println("Removing: " + i + " " + valueTF[i].getText() + " " + valueTF[i].toString());
-				((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
-				if (valueTF[i] != null) {
-					valueTF[i].removeAll();
-//					valueTF[i].revalidate();
-//					valueTF[i].repaint();
-				}
+  public void setFields(String[] labels) {
+    if (txtValue != null) {
+      for (int i = 0; i < txtValue.length; i++) {
+        // System.out.println("Removing: " + i + " " + valueTF[i].getText() + "
+        // " + valueTF[i].toString());
+        ((myJFrame) getFrameParent()).removeComponentfromlist(txtValue[i]);
+        if (txtValue[i] != null) {
+          txtValue[i].removeAll();
+          // valueTF[i].revalidate();
+          // valueTF[i].repaint();
+        }
 
-//				valueTF[i].removeAll();
-				valueTF[i] = null;
-			}
-		}
-		pnlSouth.removeAll();
-		addCustomControlsToFieldsPanel();
-//		System.out.println("New JTextField");
-    valueTF = new JTextField[fieldNumber];
+        // valueTF[i].removeAll();
+        txtValue[i] = null;
+      }
+    }
+    pnlSouth.removeAll();
+    addCustomControlsToFieldsPanel();
+    // System.out.println("New JTextField");
+    txtValue = new JTextField[fieldNumber];
     JPanel jp1 = new JPanel();
     if (fieldNumber > 8)
       jp1.setLayout(new GridLayout(0, 2, 3, 3));
@@ -197,83 +223,87 @@ public class JSubordListPane extends JPanel {
       JPanel jp2 = new JPanel();
       jp2.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 3));
       jp2.add(new JLabel(labels[i]));
-      valueTF[i] = new JTextField(Constants.FLOAT_FIELD);
-      valueTF[i].setText("0");
-      jp2.add(valueTF[i]);
-//	    System.out.println("Added: " + i + " " + valueTF[i].getText() + " " + valueTF[i].toString());
-//	    System.out.println("Adding focus: " + i);
-      valueTF[i].addFocusListener(new FocusListener() {
+      txtValue[i] = new JTextField(Constants.FLOAT_FIELD);
+      txtValue[i].setText("0");
+      jp2.add(txtValue[i]);
+      // System.out.println("Added: " + i + " " + valueTF[i].getText() + " " +
+      // valueTF[i].toString());
+      // System.out.println("Adding focus: " + i);
+      txtValue[i].addFocusListener(new FocusListener() {
         public void focusLost(FocusEvent fe) {
           retrieveparlist(selected);
         }
+
         public void focusGained(FocusEvent fe) {
         }
       });
       jp1.add(jp2);
     }
-		pnlSouth.revalidate();
-		pnlSouth.repaint();
+    pnlSouth.revalidate();
+    pnlSouth.repaint();
   }
 
   public void setList(XRDcat aparent, int index, int number, String[] labels) {
-	  if (itsparent != null) {
-//		  System.out.println("Retrieving");
-		  retrieveparlist();
-	  }
-	  if (itsparent == aparent && theindex == index)
-		  return;
-//	  System.out.println("Changing list: " + aparent.getLabel() + " " + index + " " + number + " " + labels[0]);
-    itsparent = aparent;
+    if (objParent != null) {
+      // System.out.println("Retrieving");
+      retrieveparlist();
+    }
+    if (objParent == aparent && theindex == index)
+      return;
+    // System.out.println("Changing list: " + aparent.getLabel() + " " + index +
+    // " " + number + " " + labels[0]);
+    objParent = aparent;
     theindex = index;
     fieldNumber = number;
     setFields(labels);
-    if (itsparent != null) {
-	    selected = -1;
-      int numb = itsparent.subordinateloopField[theindex].setList(lstAtomicElements);
+    if (objParent != null) {
+      selected = -1;
+      int numb = objParent.subordinateloopField[theindex].setList(lstAtomicElements);
       if (txtTotTF != null)
         txtTotTF.setText(String.valueOf(numb));
       if (numb > 0) {
         setparameterlist(0);
-	      selected = 0;
+        selected = 0;
       }
     }
-//    initListener();
+    // initListener();
   }
 
   public void setparameterlist(int numb) {
-    int totnumb = itsparent.numberofelementSubL(theindex);
+    int totnumb = objParent.numberofelementSubL(theindex);
     if (totnumb > numb) {
       lstAtomicElements.setSelectedIndex(numb);
       setparameterlist();
     }
   }
 
-	public XRDcat selectedObject = null;
+  public XRDcat selectedObject = null;
 
   public void setparameterlist() {
-    if (itsparent != null) {
-      XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].selectedElement();
+    if (objParent != null) {
+      XRDcat obj = (XRDcat) objParent.subordinateloopField[theindex].selectedElement();
       if (obj != null && obj != selectedObject)
-	      selectedObject = obj;
-        for (int i = 0; i < fieldNumber; i++) {
-          Parameter apar = obj.parameterField[i];
-          if (apar != null) {
-	          ((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
-            ((myJFrame) getFrameParent()).addComponenttolist(valueTF[i], apar);
-	          valueTF[i].setText(apar.getValue());
-          } /*else {
-            ((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
-          }*/
-        }
+        selectedObject = obj;
+      for (int i = 0; i < fieldNumber; i++) {
+        Parameter apar = obj.parameterField[i];
+        if (apar != null) {
+          ((myJFrame) getFrameParent()).removeComponentfromlist(txtValue[i]);
+          ((myJFrame) getFrameParent()).addComponenttolist(txtValue[i], apar);
+          txtValue[i].setText(apar.getValue());
+        } /*
+           * else { ((myJFrame)
+           * getFrameParent()).removeComponentfromlist(valueTF[i]); }
+           */
+      }
     }
   }
 
   public void retrieveparlist(int numb) {
-    if (numb >= 0 && itsparent != null) {
-      XRDcat obj = (XRDcat) itsparent.subordinateloopField[theindex].elementAt(numb);
+    if (numb >= 0 && objParent != null) {
+      XRDcat obj = (XRDcat) objParent.subordinateloopField[theindex].elementAt(numb);
       if (obj != null)
         for (int i = 0; i < fieldNumber; i++)
-          obj.parameterField[i].setValue(valueTF[i].getText());
+          obj.parameterField[i].setValue(txtValue[i].getText());
     }
   }
 
@@ -282,34 +312,37 @@ public class JSubordListPane extends JPanel {
   }
 
   public void setparameterField(String label) {
-    if (itsparent != null)
-      itsparent.subordinateloopField[theindex].setLabelAt(label, lstAtomicElements.getSelectedIndex());
+    if (objParent != null)
+      objParent.subordinateloopField[theindex].setLabelAt(label, lstAtomicElements.getSelectedIndex());
   }
 
   public String gettheLabel() {
     return "Parameter label:";
   }
 
-  void addB_Clicked() {
+  void btnAdd_Clicked() {
     // add a new parameter
-    if (itsparent != null && lstAtomicElements != null) {
+    if (objParent != null && lstAtomicElements != null) {
       retrieveparlist(selected);
       selected = -1;
-      itsparent.addsubordinateloopField(theindex);
-      int numb = itsparent.numberofelementSubL(theindex);
+      objParent.addsubordinateloopField(theindex);
+      int numb = objParent.numberofelementSubL(theindex);
       if (txtTotTF != null)
         txtTotTF.setText(String.valueOf(numb));
       setparameterlist(numb - 1);
     }
   }
 
-  void btnRemove_Clicked() {
+  /**
+   * Action on remove button cliccking.
+   */
+  protected void btnRemove_Clicked() {
     // remove selected parameter
-    if (itsparent != null && lstAtomicElements != null)
+    if (objParent != null && lstAtomicElements != null)
       if (lstAtomicElements.getSelectedIndex() >= 0) {
         selected = -1;
-        if (itsparent.removeselSubLField(theindex)) {
-          int numb = itsparent.numberofelementSubL(theindex);
+        if (objParent.removeselSubLField(theindex)) {
+          int numb = objParent.numberofelementSubL(theindex);
           if (txtTotTF != null)
             txtTotTF.setText(String.valueOf(numb));
         }
@@ -317,7 +350,10 @@ public class JSubordListPane extends JPanel {
       }
   }
 
-  void thelist_ListSelect() {
+  /**
+   * Action on atomic element list selection.
+   */
+  protected void doAtomicElements_ListSelect() {
     if (lstAtomicElements != null) {
       retrieveparlist(selected);
       selected = lstAtomicElements.getSelectedIndex();
@@ -325,9 +361,12 @@ public class JSubordListPane extends JPanel {
     }
   }
 
+  /**
+   * Destroys objects.
+   */
   public void dispose() {
     lstAtomicElements = null;
-    itsparent = null;
+    objParent = null;
   }
 
 }
