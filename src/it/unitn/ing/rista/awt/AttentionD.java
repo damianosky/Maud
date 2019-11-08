@@ -56,6 +56,9 @@ public class AttentionD extends myJDialog {
     pack();
   }
 
+  /**
+   * @wbp.parser.constructor
+   */
   public AttentionD(Frame parent) {
     this(parent, "Attention", "Event", null, true);
     addOkCancelButton(null);
