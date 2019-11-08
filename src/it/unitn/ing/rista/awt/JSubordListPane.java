@@ -49,6 +49,8 @@ public class JSubordListPane extends JPanel {
   protected JPanel pnlSouth          = new JPanel();
   int fieldNumber;
   protected Frame frmParent = null;
+  protected ActionListener buttonListener = null;
+  protected ListSelectionListener listSelection = null;
   /**
    * Class constructor.
    * 
@@ -108,20 +110,27 @@ public class JSubordListPane extends JPanel {
     //
     pnlSouth.setLayout(new BorderLayout(6, 6));
     pnlCenter.add(pnlSouth);
-	  initListener();
-
-	  addCustomControlsToFieldsPanel();
-
+	initListener();
+    //
+	addCustomControlsToFieldsPanel();
   }
 
-	public void addCustomControlsToFieldsPanel() {
+  public void addCustomControlsToFieldsPanel() {
 
-	}
-
+  }
+  /**
+   * Set the parent frame.
+   * 
+   * @param parent th reference to parent frame.
+   */
   public void setFrameParent(Frame parent) {
     frmParent = parent;
   }
-
+  /**
+   * Get the parent frame.
+   * 
+   * @return parent th reference to parent frame.
+   */
   public Frame getFrameParent() {
     return frmParent;
   }
@@ -137,10 +146,7 @@ public class JSubordListPane extends JPanel {
       return null;
   }
 
-	ActionListener buttonListener = null;
-	ListSelectionListener listSelection = null;
-
-  public void initListener() {
+	public void initListener() {
 	  if (buttonListener == null)
     btnAdd.addActionListener(buttonListener = new ActionListener() {
       public void actionPerformed(ActionEvent event) {
