@@ -47,7 +47,7 @@ public class JAtomTypeListPane extends JSubordListPane {
   /**
    * Defines the button for selecting atom from periodic table.
    */
-  protected JButton         btnAtomTypeChoice = new JIconButton("PeriodicTable.gif");
+  protected static JButton         btnAtomTypeChoice = new JIconButton("PeriodicTable.gif");
 
   /**
    * Class constructor.
@@ -60,56 +60,59 @@ public class JAtomTypeListPane extends JSubordListPane {
   public JAtomTypeListPane(Frame parent, boolean showTotal) {
 	super(parent, showTotal);
   }
+  /**
+   * 
+   */
+  @Override
+  public void addCustomControlsToFieldsPanel() {
+	JPanel pnlAtomButtons = new JPanel(new FlowLayout());
 
-	public void addCustomControlsToFieldsPanel() {
-		JPanel pnlAtomButtons = new JPanel(new FlowLayout());
+	this.pnlCenter.add(pnlAtomButtons, BorderLayout.NORTH);
 
-		this.pnlCenter.add(pnlAtomButtons, BorderLayout.NORTH);
+	pnlAtomButtons.add(new JLabel("Atom type:"));
+	pnlAtomButtons.add(btnAtomTypeChoice);
+	btnAtomTypeChoice.setToolTipText("Press to select the atom type");
+	btnAtomTypeChoice.addActionListener(new ActionListener() {
+	  public void actionPerformed(ActionEvent event) {
+		chooseTheAtom();
+	  }
+	});
+	//
+	JButton infoButton = new JButton("Info");
+	infoButton.addActionListener(new ActionListener() {
+	  public void actionPerformed(ActionEvent event) {
+		showInfoPanel();
+	  }
+	});
 
-		pnlAtomButtons.add(new JLabel("Atom type:"));
-		pnlAtomButtons.add(btnAtomTypeChoice);
-		btnAtomTypeChoice.setToolTipText("Press to select the atom type");
-		btnAtomTypeChoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				chooseTheAtom();
-			}
-		});
-		JButton infoButton = new JButton("Info");
-		infoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				showInfoPanel();
-			}
-		});
-
-		pnlAtomButtons.add(infoButton);
-
-
-	}
-	/**
-	 * Sets the parameters for atom.
-	 */
-	public void setParameterList() {
-		if (itsparent != null) {
-			AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
-			if (scatterer != null && scatterer != selectedObject) {
-				selectedObject = scatterer;
-				for (int i = 0; i < fieldNumber; i++) {
-					Parameter apar = scatterer.parameterField[i];
-					if (apar != null) {
-						((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
-//						System.out.println("Adding jatom: " + i + " " + valueTF[i].getText());
-						((myJFrame) getFrameParent()).addComponenttolist(valueTF[i], apar);
-						valueTF[i].setText(apar.getValue());
-					}/* else {
+	pnlAtomButtons.add(infoButton);
+  }
+  
+  /**
+   * Sets the parameters for atom.
+   */
+  public void setParameterList() {
+	if (itsparent != null) {
+	  AtomScatterer scatterer = (AtomScatterer) itsparent.subordinateloopField[theindex].selectedElement();
+		if (scatterer != null && scatterer != selectedObject) {
+		  selectedObject = scatterer;
+		  for (int i = 0; i < fieldNumber; i++) {
+			Parameter apar = scatterer.parameterField[i];
+			if (apar != null) {
+			  ((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
+//					System.out.println("Adding jatom: " + i + " " + valueTF[i].getText());
+			  ((myJFrame) getFrameParent()).addComponenttolist(valueTF[i], apar);
+			  valueTF[i].setText(apar.getValue());
+			}/* else {
 //						System.out.println("Removing jatom: " + i + " " + valueTF[i].getText());
 						((myJFrame) getFrameParent()).removeComponentfromlist(valueTF[i]);
 					}*/
-				}
-				btnAtomTypeChoice.setText(scatterer.getAtomSymbol());
-			}
+		  }
+		  btnAtomTypeChoice.setText(scatterer.getAtomSymbol());
 		}
+	  }
 	}
-
+  
 	/**
 	 * Activates the periodic table for atom selection.
 	 */
