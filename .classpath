@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libs/current/aparapi.jar"/>
+	<classpathentry kind="lib" path="libs/current/com.github.tschoonj.xraylib.jar"/>
+	<classpathentry kind="lib" path="libs/current/commons-math.jar"/>
+	<classpathentry kind="lib" path="libs/current/EsquiClient.jar"/>
+	<classpathentry kind="lib" path="libs/current/Examples.jar"/>
+	<classpathentry kind="lib" path="libs/current/Files.jar"/>
+	<classpathentry kind="lib" path="libs/current/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="libs/current/Help.jar"/>
+	<classpathentry kind="lib" path="libs/current/HTTPClient.jar"/>
+	<classpathentry kind="lib" path="libs/current/ij.jar"/>
+	<classpathentry kind="lib" path="libs/current/Images.jar"/>
+	<classpathentry kind="lib" path="libs/current/jdom.jar"/>
+	<classpathentry kind="lib" path="libs/current/jgaec.jar"/>
+	<classpathentry kind="lib" path="libs/current/jgap.jar"/>
+	<classpathentry kind="lib" path="libs/current/jmol.jar"/>
+	<classpathentry kind="lib" path="libs/current/jogl.all.jar"/>
+	<classpathentry kind="lib" path="libs/current/joone-engine.jar"/>
+	<classpathentry kind="lib" path="libs/current/miscLib.jar"/>
+	<classpathentry kind="lib" path="libs/current/MySQL-ConnectorJ.jar"/>
+	<classpathentry kind="lib" path="libs/current/nativewindow.all.jar"/>
+	<classpathentry kind="lib" path="libs/current/newt.all.jar"/>
+	<classpathentry kind="lib" path="libs/current/rome.jar"/>
+	<classpathentry kind="lib" path="libs/current/sqlite-jdbc.jar"/>
+	<classpathentry kind="lib" path="libs/current/swingx.jar"/>
+	<classpathentry kind="lib" path="libs/current/xgridagent.jar"/>
+	<classpathentry kind="lib" path="libs/current/xgridlib.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
